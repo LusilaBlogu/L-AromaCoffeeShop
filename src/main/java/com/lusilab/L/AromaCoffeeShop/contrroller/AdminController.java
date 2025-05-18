@@ -19,7 +19,7 @@ public class AdminController {
     private AdminService adminService;
 
     @Autowired
-    private CoffeeService coffeService;
+    private CoffeeService coffeeService;
 
 
     @GetMapping("/signup")
@@ -85,4 +85,4 @@ public class AdminController {
 
 
 
-}
+
