@@ -1,4 +1,4 @@
-package com.lusilab.L.AromaCoffeeShop.contrroller;
+package com.lusilab.L.AromaCoffeeShop.controller;
 
 import com.lusilab.L.AromaCoffeeShop.entity.Admin;
 import com.lusilab.L.AromaCoffeeShop.entity.Coffee;
