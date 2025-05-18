@@ -2,7 +2,6 @@ package com.lusilab.L.AromaCoffeeShop.entity;
 
 import jakarta.persistence.*;
 
-
 @Entity
 public class Coffee {
 
