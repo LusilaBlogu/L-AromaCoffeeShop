@@ -46,5 +46,4 @@ public class CoffeeService {
     public void deleteCoffee(Long id) {
         coffeeRepository.deleteById(id);
     }
-
 }
