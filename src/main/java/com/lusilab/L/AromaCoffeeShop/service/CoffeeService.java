@@ -28,7 +28,23 @@ public class CoffeeService {
         return coffeeRepository.save(coffee);
     }
 
+
+    public Coffee updateCoffee(Long id, Coffee updatedCoffee) {
+        Optional<Coffee> existingCoffee = coffeeRepository.findById(id);
+        if (existingCoffee.isPresent()) {
+            Coffee coffee = existingCoffee.get();
+            coffee.setName(updatedCoffee.getName());
+            coffee.setDescription(updatedCoffee.getDescription());
+            coffee.setPrice(updatedCoffee.getPrice());
+            coffee.setOrigin(updatedCoffee.getOrigin());
+            coffee.setIntensityOfCoffee(updatedCoffee.getIntensityOfCoffee());
+            return coffeeRepository.save(coffee);
+        } else {
+            return null;
+        }
+    }
     public void deleteCoffee(Long id) {
         coffeeRepository.deleteById(id);
     }
+
 }
