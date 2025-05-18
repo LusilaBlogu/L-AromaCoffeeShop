@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Krijo Porosi</title></head>
+<body>
+<h2>Krijo Porosinë Tënde</h2>
+<form th:action="@{/orders/save}" method="post">
+    <label>Kafe:</label>
+    <select name="coffeeId" th:each="coffee : ${coffees}" th:value="${coffee.id}" th:text="${coffee.name}"></select><br>
+    <label>Sasia:</label>
+    <input type="number" name="quantity" min="1"><br>
+    <label>Madhësia:</label>
+    <select name="size" th:each="s : ${sizes}" th:value="${s}" th:text="${s}"></select><br>
+    <label>Shtesa:</label><br>
+    <input type="checkbox" name="extraSugar">Sheqer<br>
+    <input type="checkbox" name="extraMilk">Qumësht<br>
+    <input type="checkbox" name="extraChocolate">Çokollatë<br>
+    <!-- shto të tjerat... -->
+    <label>Mënyra Pagesës:</label>
+    <select name="paymentMethod" th:each="p : ${paymentMethods}" th:value="${p}" th:text="${p}"></select><br>
+    <button type="submit">Porosit</button>
+</form>
+</body>
+</html>
+
