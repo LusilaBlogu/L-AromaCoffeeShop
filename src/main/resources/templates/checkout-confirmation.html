@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="sq" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order - L'Aroma</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column; /* Siguron që header/footer (nëse ka) të pozicionohen siç duhet */
+            justify-content: center; /* Qendron vertikalisht */
+            align-items: center; /* Qendron horizontalisht */
+            min-height: 100vh; /* Mbulon të gjithë lartësinë e ekranit */
+            background-color: #fff5e1; /* Ngjyrë e ëmbël kajsi e lehtë / krem */
+            margin: 0;
+            padding: 20px; /* Hapësirë rreth kontejnerit në ekrane të vogla */
+            box-sizing: border-box; /* Përfshin padding në llogaritjen e gjerësisë/lartësisë */
+            color: #5D4037; /* Ngjyrë teksti bazë (kafe e errët e ngrohtë) */
+        }
+
+        .confirmation-container {
+            max-width: 600px; /* Gjerësi maksimale e përshtatshme */
+            width: 100%; /* Merr gjerësinë e lejuar */
+            margin: 20px auto; /* Hapësirë sipër dhe poshtë, auto për qendërzim horizontal shtesë */
+            background-color: #ffffff; /* Sfond i bardhë për përmbajtjen */
+            padding: 35px 40px; /* Hapësirë e brendshme e bollshme */
+            border-radius: 12px; /* Kënde të rrumbullakosura më butë */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08); /* Hije më e butë dhe moderne */
+            text-align: center; /* Qendron tekstin dhe elementet inline brenda kontejnerit */
+        }
+
+        .confirmation-container h1 {
+            color: #66bb6a; /* Jeshile e ëmbël dhe pozitive */
+            margin-bottom: 25px; /* Më shumë hapësirë poshtë titullit */
+            font-size: 2em; /* Madhësi më e madhe për titullin */
+            font-weight: 600;
+        }
+
+        /* Stili për paragrafët në përgjithësi brenda kontejnerit */
+        .confirmation-container p {
+            font-size: 1.1em;
+            color: #5D4037; /* Ngjyrë teksti kafe e ngrohtë */
+            line-height: 1.7; /* Hapësirë më e mirë ndërmjet rreshtave */
+            margin-bottom: 15px;
+        }
+
+        /* Stili për tekstin e theksuar (strong) brenda paragrafeve */
+        .confirmation-container p strong {
+            color: #795548; /* Kafe pak më e çelët për theksim */
+            font-weight: 600;
+        }
+
+        /* Stili për mesazhin e suksesit (duke respektuar inline style ekzistues) */
+        /* Këto rregulla do të aplikohen në <p> brenda div-it të suksesit */
+        .confirmation-container div[th\\:if*='message_success'] p {
+             /* Ngjyra dhe font-weight do të vijnë nga inline style, por mund të shtojmë të tjera */
+            font-size: 1.15em; /* Pak më i madh për mesazhin kryesor */
+        }
+
+
+        .order-ids-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 10px;
+            margin-bottom: 20px; /* Hapësirë poshtë listës së ID-ve */
+        }
+
+        .order-ids-list li {
+            background-color: #e8f5e9; /* Jeshile shumë e lehtë, në harmoni me H1 */
+            color: #388e3c; /* Tekst jeshil më i errët për kontrast */
+            padding: 6px 12px;
+            margin: 4px; /* Hapësirë rreth çdo ID */
+            border-radius: 16px; /* Formë pilule */
+            display: inline-block; /* Qëndrojnë në një rresht nëse ka vend */
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        /* Stili për tekstin kursiv (em) */
+        .confirmation-container p em {
+            color: #795548; /* Ngjyrë e njëjtë si strong për konsistencë */
+            font-size: 0.95em;
+        }
+
+        .links {
+            margin-top: 25px; /* Hapësirë sipër butonave */
+        }
+
+        .links a {
+            display: inline-block;
+            margin: 10px 8px; /* Hapësirë rreth butonave */
+            padding: 12px 25px; /* Madhësi e mirë për butonat */
+            text-decoration: none;
+            border-radius: 25px; /* Butona në formë pilule */
+            font-weight: 600;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-new-order {
+            background-color: #66bb6a; /* Jeshile e ëmbël, si H1 */
+            color: white;
+        }
+        .btn-new-order:hover {
+            background-color: #57a95b; /* Jeshile pak më e errët në hover */
+            transform: translateY(-2px); /* Efekt i lehtë ngritjeje */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .btn-home {
+            background-color: #a1887f; /* Kafe e lehtë e ngrohtë, neutrale */
+            color: white;
+        }
+        .btn-home:hover {
+            background-color: #8d6e63; /* Kafe pak më e errët në hover */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+<div class="confirmation-container">
+    <h1>Thank you for your Order!</h1>
+
+    <div th:if="${message_success}" style="color:green; font-weight:bold; margin-bottom:20px;">
+        <p th:text="${message_success}"></p>
+    </div>
+
+
+    <div th:if="${processedOrderIds != null and !#lists.isEmpty(processedOrderIds)}">
+        <p>Your Order ID is:</p>
+        <ul class="order-ids-list">
+            <li th:each="orderId : ${processedOrderIds}" th:text="'ID: ' + ${orderId}"></li>
+        </ul>
+        <p><em>Give the invoice at the registry to receive your order.</em></p>
+    </div>
+    <div th:unless="${processedOrderIds != null and !#lists.isEmpty(processedOrderIds)}">
+        <p>The order details were not found.</p>
+    </div>
+
+    <div class="links">
+        <a th:href="@{/coffees}" class="btn-new-order">New Order</a>
+        <a th:href="@{/}" class="btn-home">Return to the Main Page</a>
+    </div>
+</div>
+</body>
+</html>

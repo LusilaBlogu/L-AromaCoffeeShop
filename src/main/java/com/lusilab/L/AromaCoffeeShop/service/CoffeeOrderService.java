@@ -5,7 +5,6 @@ import com.lusilab.L.AromaCoffeeShop.entity.CoffeeOrder;
 import com.lusilab.L.AromaCoffeeShop.entity.CoffeeSize;
 import com.lusilab.L.AromaCoffeeShop.entity.PaymentMethod;
 import com.lusilab.L.AromaCoffeeShop.repository.CoffeeOrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

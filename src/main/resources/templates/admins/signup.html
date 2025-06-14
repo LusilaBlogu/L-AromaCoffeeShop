@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="sq" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign up - L'Aroma</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Siguron që qendërzimi të funksionojë në të gjithë lartësinë e ekranit */
+            background-color: #fff5e1; /* Ngjyrë e ëmbël kajsi e lehtë / krem */
+            margin: 0; /* Heq margin default të body */
+            padding: 20px; /* Shtojmë pak padding që kontejneri të mos ngjitet në skaje në ekrane të vogla */
+            box-sizing: border-box;
+        }
+
+        .signup-container {
+            background-color: #ffffff; /* Sfond i bardhë për kontrast */
+            padding: 35px 40px; /* Më shumë hapësirë e brendshme */
+            border-radius: 12px; /* Kënde më të rrumbullakosura */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1); /* Hije më e butë dhe moderne */
+            width: 100%; /* Merr gjerësinë e plotë të lejuar nga padding i body */
+            max-width: 420px; /* Gjerësi maksimale e përshtatshme për formën e regjistrimit */
+            text-align: center; /* Qendron elementet brenda si titulli, butonat dhe linket */
+            box-sizing: border-box;
+        }
+
+        .signup-container h1 {
+            text-align: center;
+            color: #795548; /* Kafe e ngrohtë, e ëmbël */
+            margin-bottom: 25px; /* Më shumë hapësirë poshtë titullit */
+            font-size: 1.8em; /* Madhësi e përshtatshme për titullin */
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 18px; /* Hapësirë e konsiderueshme ndërmjet fushave */
+            text-align: left; /* Etiketat dhe fushat të rreshtuara majtas */
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px; /* Hapësirë e vogël poshtë etiketës */
+            font-weight: 600; /* Tekst më i trashë për etiketat */
+            color: #5D4037; /* Ngjyrë kafe e errët për etiketat */
+            font-size: 0.9em;
+        }
+
+        .form-group input {
+            width: 100%; /* Fusha merr të gjithë gjerësinë e .form-group */
+            padding: 12px 15px; /* Padding më i mirë brenda fushave */
+            border: 1px solid #d1bfa7; /* Kufi më i butë, ngjyrë kafe e lehtë */
+            border-radius: 8px; /* Kënde të rrumbullakosura për fushat */
+            box-sizing: border-box; /* Siguron që padding dhe border të jenë pjesë e width/height */
+            font-size: 1em;
+            background-color: #fdfdfd; /* Sfond shumë i lehtë për fushat */
+            color: #333;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none; /* Heqim outline default */
+            border-color: #ff8a65; /* Ngjyrë korali e ëmbël në fokus */
+            box-shadow: 0 0 0 3px rgba(255, 138, 101, 0.25); /* Hije e lehtë rrethuese në fokus */
+        }
+
+        .btn-submit {
+            background-color: #ff8a65; /* Ngjyrë korali e ëmbël për butonin kryesor */
+            color: white;
+            padding: 12px 20px; /* Padding i përshtatshëm */
+            border: none;
+            border-radius: 25px; /* Formë pilule për butonin */
+            width: 100%; /* Butoni merr të gjithë gjerësinë */
+            cursor: pointer;
+            font-size: 1.05em; /* Pak më i madh fonti */
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px; /* Shtojmë pak hapësirë sipër butonit */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-submit:hover {
+            background-color: #ff7043; /* Ngjyrë korali pak më e errët në hover */
+            transform: translateY(-2px); /* Efekt i lehtë ngritjeje */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .message {
+            padding: 12px 15px;
+            margin-bottom: 20px; /* Hapësirë e mirë poshtë mesazhit */
+            border-radius: 8px;
+            font-size: 0.9em;
+            border-left-width: 5px;
+            border-left-style: solid;
+            text-align: center; /* Teksti i mesazhit i qendërzuar */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .error-message {
+            background-color: #ffebee; /* Rozë e lehtë për gabim */
+            border-left-color: #ef5350; /* E kuqe e ëmbël për kufirin */
+            color: #c62828; /* Tekst i kuq i errët */
+        }
+
+        /* Nuk ka .success-message në këtë HTML specifik, por nëse shtohet, do të ishte i ngjashëm */
+
+        .links {
+            margin-top: 25px; /* Më shumë hapësirë sipër linkeve */
+            font-size: 0.9em;
+            color: #555; /* Ngjyrë gri për tekstin shoqërues */
+        }
+        .links a {
+            color: #ff7043; /* Ngjyrë korali për linket, konsistencë me butonin */
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease, text-decoration 0.3s ease;
+        }
+        .links a:hover {
+            color: #e65100; /* Korali më i errët në hover */
+            text-decoration: underline;
+        }
+        .links br { /* Shtojmë pak hapësirë pas <br> nëse ka */
+            content: "";
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="signup-container">
+    <h1>Sign up as an Admin</h1>
+    <div th:if="${error}" class="message error-message" th:text="${error}">
+        Your email already exist.
+    </div>
+
+    <form th:action="@{/admins/signup}" th:object="${admin}" method="post">
+        <div class="form-group">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" th:field="*{name}" required />
+        </div>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" th:field="*{username}" required />
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" th:field="*{email}" required />
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" th:field="*{password}" required />
+        </div>
+        <button type="submit" class="btn-submit">Sign up</button>
+    </form>
+    <div class="links">
+        Already have an account? <a th:href="@{/admins/login}">Log in here.</a><br/>
+        <a th:href="@{/}">Return to the Main Page</a>
+    </div>
+</div>
+</body>
+</html>

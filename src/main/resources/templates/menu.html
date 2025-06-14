@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="sq" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu - L'Aroma</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px 25px; /* Më shumë padding anësor */
+            background-color: #fff5e1; /* Ngjyrë e ëmbël kajsi e lehtë / krem */
+            color: #5D4037; /* Ngjyrë teksti bazë (kafe e errët e ngrohtë) */
+        }
+
+        h1 {
+            text-align: center;
+            color: #795548; /* Kafe e ngrohtë */
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+
+        .message {
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            font-size: 1em;
+            border-left-width: 5px;
+            border-left-style: solid;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .success-message {
+            background-color: #e6ffed;
+            border-left-color: #66bb6a; /* Jeshile e ëmbël */
+            color: #388e3c;
+        }
+
+        .error-message {
+            background-color: #ffebee;
+            border-left-color: #ef5350; /* E kuqe e ëmbël */
+            color: #c62828;
+        }
+
+        .cart-info {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background-color: #ffffff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+            border: 1px solid #f0e6d8; /* Kufi i lehtë */
+            min-width: 200px; /* Gjerësi minimale për pamje më të mirë */
+            text-align: left; /* Rreshtimi i tekstit majtas brenda kutisë */
+        }
+        .cart-info span {
+            font-weight: 600;
+            color: #795548;
+        }
+        .cart-info br {
+            margin-bottom: 5px;
+        }
+        .cart-info a {
+            display: block;
+            text-align: center;
+            margin-top: 12px;
+            padding: 8px 10px;
+            background-color: #ff8a65; /* Ngjyrë korali */
+            color: white;
+            text-decoration: none;
+            border-radius: 20px; /* Formë pilule */
+            font-weight: 500;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .cart-info a:hover {
+            background-color: #ff7043; /* Korali më i errët */
+            transform: translateY(-1px);
+        }
+
+        .coffee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px; /* Hapësirë më e madhe */
+            padding-top: 10px; /* Hapësirë nga elementet sipër (si mesazhet) */
+        }
+
+        .coffee-card {
+            background-color: #ffffff; /* Sfond i bardhë për kartat */
+            border: 1px solid #e0cdaf; /* Kufi më i butë ngjyrë kafe e lehtë */
+            padding: 20px;
+            border-radius: 12px; /* Kënde më të rrumbullakosura */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.07); /* Hije e butë */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .coffee-card:hover {
+            transform: translateY(-5px); /* Efekt ngritjeje në hover */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .coffee-card img {
+            max-width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px; /* Kënde të rrumbullakosura për imazhin */
+            margin-bottom: 15px;
+            border: 1px solid #f5f0e8; /* Kufi shumë i lehtë rreth imazhit */
+        }
+
+        .coffee-card h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #6F4E37; /* Ngjyrë kafe më e theksuar për titullin */
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .coffee-card p { /* Përshkrimi */
+            font-size: 0.9em;
+            color: #795548; /* Kafe më e çelët për përshkrimin */
+            margin-bottom: 12px;
+            flex-grow: 1;
+            line-height: 1.5;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #ff7043; /* Ngjyrë korali e theksuar për çmimin */
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .btn { /* Stili bazë i butonit, përdoret nga .btn-primary */
+            display: inline-block;
+            padding: 10px 20px; /* Padding më i mirë */
+            margin-top: 10px;
+            text-decoration: none;
+            border-radius: 25px; /* Formë pilule */
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            border: none; /* Heqim kufirin default nëse ka */
+        }
+
+        .btn-primary {
+            background-color: #ff8a65; /* Ngjyrë korali e ëmbël */
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-primary:hover {
+            background-color: #ff7043; /* Korali më i errët */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Stili për mesazhin "Nuk ka kafe të disponueshme" */
+        div[th\:if*="#lists.isEmpty(coffees)"] p {
+            text-align: center;
+            font-size: 1.1em;
+            color: #795548;
+            padding: 30px;
+            background-color: #fff9f2;
+            border: 1px dashed #e0cdaf;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* Stili për linkun "Kthehu te Faqja Kryesore" */
+        body > p:last-of-type { /* Synon paragrafin e fundit të body */
+            text-align: center; /* Qendron linkun brenda paragrafit */
+            padding-top: 20px; /* Hapësira ekzistuese */
+            clear: both; /* Ruan funksionalitetin ekzistues */
+        }
+        body > p:last-of-type a {
+            color: #795548; /* Ngjyrë kafe e lehtë */
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border: 1px solid #d1bfa7;
+            border-radius: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        body > p:last-of-type a:hover {
+            background-color: #f5f0e8;
+            color: #5D4037;
+        }
+
+    </style>
+
+</head>
+<body>
+<h1>Choose your Coffees</h1>
+
+<div th:if="${message_success}" class="message success-message" th:text="${message_success}"></div>
+<div th:if="${message_error}" class="message error-message" th:text="${message_error}"></div>
+
+<div class="cart-info">
+    🛒 Cart: <span th:text="${shoppingCart != null ? #lists.size(shoppingCart.items) : 0}">0</span> Items<br/>
+    Total: <span th:text="${shoppingCart != null ? #numbers.formatDecimal(shoppingCart.totalAmount, 1, 2) : '0.00'}">0.00</span> ALL<br/>
+    <a th:href="@{/cart/view}" style="display: block; text-align: center; margin-top: 5px;">View Cart</a>
+</div>
+
+<div class="coffee-grid" th:if="${!#lists.isEmpty(coffees)}">
+    <div class="coffee-card" th:each="coffee : ${coffees}">
+        <div>
+            <img th:src="${coffee.imageUrl != null and !coffee.imageUrl.isEmpty() ? coffee.imageUrl : 'https://via.placeholder.com/250x180?text=Kafe'}" th:alt="${coffee.name}" />
+            <h3 th:text="${coffee.name}">Name</h3>
+            <p th:text="${coffee.description}">Description</p>
+            <p class="price" th:text="${#numbers.formatDecimal(coffee.price, 1, 2)} + ' ALL'"></p>
+        </div>
+        <div>
+            <a th:href="@{/cart/configure/{coffeeId}(coffeeId=${coffee.id})}" class="btn btn-primary">Add to Cart</a>
+        </div>
+    </div>
+</div>
+<div th:if="${#lists.isEmpty(coffees)}">
+    <p>We are sorry, there is no coffee available at the moment :(</p>
+</div>
+<p style="clear:both; padding-top:20px;"><a th:href="@{/}">Return to the Main Page</a></p>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="sq" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout - L'Aroma</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #fff5e1; /* Ngjyrë e ëmbël kajsi e lehtë / krem */
+            color: #5D4037; /* Ngjyrë teksti bazë kafe e ngrohtë */
+            display: flex; /* Për qendërzim të kontejnerit */
+            justify-content: center;
+            align-items: flex-start; /* Kontejneri fillon nga lart */
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            margin: 30px auto;
+            background-color: #ffffff; /* Sfond i bardhë për kontrast */
+            padding: 30px 35px; /* Më shumë padding */
+            border-radius: 12px; /* Kënde më të rrumbullakosura */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08); /* Hije më e butë */
+        }
+
+        h1 {
+            text-align: center;
+            color: #795548; /* Kafe e ngrohtë */
+            margin-bottom: 30px; /* Më shumë hapësirë poshtë */
+            font-size: 2em;
+            font-weight: 600;
+        }
+
+        .summary-section, .payment-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0e6d8; /* Ndarës më i butë */
+        }
+        .summary-section:last-of-type, .payment-section:last-of-type {
+            border-bottom: none; /* Heqim ndarësin për seksionin e fundit */
+        }
+
+        .summary-section h3, .payment-section h3 {
+            color: #5D4037; /* Kafe e errët */
+            margin-bottom: 18px;
+            font-size: 1.4em;
+            font-weight: 600;
+            border-bottom: 2px solid #e0cdaf; /* Vijë e lehtë poshtë titujve të seksioneve */
+            padding-bottom: 8px;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .summary-list li {
+            padding: 12px 5px; /* Më shumë padding vertikal */
+            border-bottom: 1px dashed #f5f0e8; /* Ndarës shumë i lehtë */
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Rreshtim vertikal i elementeve */
+            transition: background-color 0.2s ease;
+        }
+        .summary-list li:hover {
+            background-color: #fffaf2; /* Sfond i lehtë në hover */
+        }
+
+        .summary-list li:last-child {
+            border-bottom: none;
+        }
+
+        .item-details span {
+            display: block;
+            font-size: 0.9em;
+            color: #777; /* Gri më e çelët për detajet */
+            margin-top: 3px;
+        }
+        .item-details strong {
+             color: #6F4E37; /* Ngjyrë më e fortë për emrin e produktit */
+        }
+        .summary-list li > strong { /* Çmimi i artikullit */
+            font-weight: 600;
+            color: #795548;
+            font-size: 1.05em;
+        }
+
+        .total-checkout {
+            font-weight: bold;
+            font-size: 1.4em;
+            text-align: right;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #e0cdaf; /* Vijë solide sipër totalit */
+            color: #ff7043; /* Ngjyrë korali e theksuar */
+        }
+        .total-checkout span {
+            margin-left: 10px;
+        }
+
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600; /* Tekst më i trashë për etiketat */
+            color: #5D4037; /* Ngjyrë kafe e errët */
+            font-size: 0.95em;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            box-sizing: border-box;
+            border-radius: 8px; /* Kënde më të rrumbullakosura */
+            border: 1px solid #d1bfa7; /* Kufi më i butë kafe e lehtë */
+            font-size: 1em;
+            background-color: #fdfdfd;
+            color: #333;
+            appearance: none; /* Heqim pamjen default të browser-it */
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23795548%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+            cursor: pointer;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-group select:focus {
+            outline: none;
+            border-color: #ff8a65; /* Ngjyrë korali në fokus */
+            box-shadow: 0 0 0 3px rgba(255, 138, 101, 0.25);
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 14px 20px;
+            background-color: #ff8a65; /* Ngjyrë korali e ëmbël */
+            color: white;
+            border: none;
+            border-radius: 28px; /* Formë pilule */
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px; /* Hapësirë sipër butonit */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-submit:hover {
+            background-color: #ff7043; /* Korali më i errët */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .link-back {
+            display: inline-block;
+            margin-top: 25px;
+            color: #795548; /* Kafe e lehtë */
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border: 1px solid #d1bfa7;
+            border-radius: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .link-back:hover {
+            background-color: #f5f0e8;
+            color: #5D4037;
+        }
+
+        .error-message {
+            color: #c62828; /* E kuqe e errët */
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            background-color: #ffebee; /* Rozë e lehtë */
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ef5350; /* E kuqe e ëmbël */
+            text-align: left; /* Mesazhi i gabimit majtas */
+        }
+
+        /* Stili për mesazhin "Shporta është boshe" */
+        div[th\:if*="isEmpty(shoppingCart.items)"] p {
+            text-align: center;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        div[th\:if*="isEmpty(shoppingCart.items)"] p a {
+            color: #ff7043; /* Korali */
+            font-weight: 500;
+            text-decoration: none;
+        }
+        div[th\:if*="isEmpty(shoppingCart.items)"] p a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+<body>
+<div class="container">
+    <h1>Place Order</h1>
+
+    <div th:if="${#lists.isEmpty(shoppingCart.items)}">
+        <p>Your Cart is Empty. <a th:href="@{/coffees}">Add Items.</a></p>
+        <p><a th:href="@{/cart/view}">Return to Cart</a></p>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(shoppingCart.items)}">
+        <section class="summary-section">
+            <h3>Your Cart:</h3>
+            <ul class="summary-list">
+                <li th:each="item : ${shoppingCart.items}">
+                    <div>
+                        <strong th:text="${item.coffeeName}">Name</strong>
+                        <span th:text="'    Quantity: ' + ${item.quantity}"></span>
+                        <span th:text="${item.coffeeSize != null ? item.coffeeSize.toString() : ''}">Size</span>
+
+                    </div>
+                    <strong th:text="${#numbers.formatDecimal(item.subtotal,1,2)} + ' ALL'"></strong>
+                </li>
+            </ul>
+            <p class="total-checkout">Total: <span th:text="${#numbers.formatDecimal(shoppingCart.totalAmount,1,2)} + ' ALL'"></span></p>
+        </section>
+        <hr/>
+
+        <section class="payment-section">
+            <h3>Payment Details</h3>
+            <div th:if="${message_error_payment}" class="error-message" th:text="${message_error_payment}"></div>
+
+            <form th:action="@{/checkout/process}" method="post">
+
+
+                <div class="form-group">
+                    <label for="paymentMethod">Payment Method:</label>
+                    <select id="paymentMethod" name="paymentMethod" required>
+                        <option value="">Choose your option...</option>
+                        <option th:each="pmOpt : ${paymentMethods}"
+                                th:value="${pmOpt.name()}"
+                                th:text="${pmOpt.displayName}"
+                                th:selected="${shoppingCart.paymentMethod != null and shoppingCart.paymentMethod.name() == pmOpt.name()}"></option>
+                    </select>
+                </div>
+                <br/>
+                <button type="submit" class="btn-submit">Place Order</button>
+            </form>
+        </section>
+        <a th:href="@{/cart/view}" class="link-back">Edit Cart</a>
+    </div>
+</div>
+</body>
+</html>

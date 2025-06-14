@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="sq" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuration- L'Aroma</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #fff5e1; /* Ngjyrë e ëmbël kajsi e lehtë / krem */
+            color: #5D4037; /* Ngjyrë teksti bazë kafe e ngrohtë */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Kontejneri fillon nga lart */
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 30px auto;
+            background-color: #ffffff; /* Sfond i bardhë për kontrast */
+            padding: 30px 35px; /* Më shumë padding */
+            border-radius: 12px; /* Kënde më të rrumbullakosura */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08); /* Hije më e butë */
+        }
+
+        h1 {
+            text-align: center;
+            color: #795548; /* Kafe e ngrohtë */
+            margin-bottom: 5px; /* Reduktuar pak pasi ka info poshtë */
+            font-size: 1.9em; /* Pak më i vogël se checkout */
+            font-weight: 600;
+        }
+        h1 span {
+            color: #ff7043; /* Ngjyrë korali për emrin e kafes */
+            font-weight: 700;
+        }
+
+        .coffee-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .coffee-info p {
+            margin: 8px 0;
+            color: #6a554c; /* Kafe më e çelët për përshkrimin */
+            line-height: 1.6;
+        }
+        .price-base {
+            font-weight: bold;
+            font-size: 1.15em;
+            color: #8d6e63; /* Kafe e mesme për çmimin bazë */
+        }
+        .price-base span {
+            color: #795548; /* Ngjyrë më e fortë për vlerën */
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: #f0e6d8; /* Ndarës shumë i butë */
+            margin: 25px 0;
+        }
+
+        /* Stili për mesazhet e gabimit të validimit */
+        .error-message {
+            background-color: #ffebee; /* Rozë e lehtë */
+            color: #c62828; /* E kuqe e errët */
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #ef5350; /* E kuqe e ëmbël */
+            font-size: 0.9em;
+        }
+        .error-message p {
+            margin: 0 0 8px 0;
+            font-weight: bold;
+        }
+        .error-message ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .error-message li {
+            margin-bottom: 4px;
+        }
+        /* Gabimet specifike për fusha */
+        .form-group .error-message {
+            background-color: transparent;
+            border: none;
+            padding: 5px 0 0 0;
+            margin-top: 3px;
+            margin-bottom: 0;
+            font-size: 0.85em;
+        }
+
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group legend {
+            font-weight: 600;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #5D4037; /* Kafe e errët */
+            border-bottom: 2px solid #e0cdaf; /* Vijë e lehtë poshtë legendës */
+            padding-bottom: 8px;
+            width: 100%; /* Siguron që vija të shtrihet plotësisht */
+        }
+
+        .form-group label { /* Etiketat për input/select */
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #5D4037;
+            font-size: 0.95em;
+        }
+
+        .form-group input[type="number"],
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            box-sizing: border-box;
+            border-radius: 8px;
+            border: 1px solid #d1bfa7; /* Kufi më i butë kafe e lehtë */
+            font-size: 1em;
+            background-color: #fdfdfd;
+            color: #333;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-group input[type="number"]:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ff8a65; /* Ngjyrë korali në fokus */
+            box-shadow: 0 0 0 3px rgba(255, 138, 101, 0.25);
+        }
+         .form-group select { /* Shigjeta custom për select */
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23795548%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+            cursor: pointer;
+        }
+
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px; /* Më shumë hapësirë ndërmjet checkbox-eve */
+            padding: 8px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+        .checkbox-group:hover {
+            background-color: #fffaf2; /* Sfond shumë i lehtë në hover */
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2); /* Pak më të mëdhenj checkbox-at */
+            accent-color: #ff7043; /* Ngjyra e checkbox-it kur zgjidhet */
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            font-weight: 500; /* Pak më bold */
+            color: #6F4E37; /* Ngjyrë kafe e mesme */
+            cursor: pointer;
+            flex-grow: 1; /* Ben qe label te zere pjesen tjeter te hapesires */
+        }
+        .checkbox-group label span { /* Çmimi i shtesës */
+            font-weight: normal;
+            color: #8d6e63;
+            font-size: 0.9em;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 14px 20px;
+            background-color: #ff8a65; /* Ngjyrë korali e ëmbël */
+            color: white;
+            border: none;
+            border-radius: 28px; /* Formë pilule */
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 15px; /* Hapësirë sipër butonit */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .btn-submit:hover {
+            background-color: #ff7043; /* Korali më i errët */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .link-cancel {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #795548; /* Kafe e lehtë */
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 15px;
+            border: 1px solid #d1bfa7;
+            border-radius: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .link-cancel:hover {
+            background-color: #f5f0e8;
+            color: #5D4037;
+        }
+
+    </style>
+
+</head>
+<body>
+<div class="container">
+    <h1>Config: <span th:text="${coffeeToConfigure.name}">Name</span></h1>
+    <div class="coffee-info">
+        <p th:text="${coffeeToConfigure.description}">Description</p>
+        <p class="price-base">Price: <span th:text="${#numbers.formatDecimal(coffeeToConfigure.price, 1, 2)} + ' ALL'"></span></p>
+    </div>
+    <hr/>
+
+    <!-- Shfaq gabimet e validimit nëse ka -->
+    <div th:if="${#fields.hasErrors('${cartItemFormData.*}')}" class="error-message">
+        <p>Please correct the following mistakes:</p>
+        <ul>
+            <li th:each="err : ${#fields.errors('${cartItemFormData.*}')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+
+    <form th:action="@{/cart/add}" th:object="${cartItemFormData}" method="post">
+        <input type="hidden" name="configuredCoffeeId" th:value="${coffeeToConfigure.id}" />
+
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" th:field="*{quantity}" min="1" value="1" required />
+            <div th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}" class="error-message"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="coffeeSize">Size:</label>
+            <select id="coffeeSize" th:field="*{coffeeSize}" required>
+                <option value="">Choose your option...</option>
+                <option th:each="sizeOpt : ${coffeeSizes}"
+                        th:value="${sizeOpt.name()}"
+                        th:text="${sizeOpt.toString()}"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('coffeeSize')}" th:errors="*{coffeeSize}" class="error-message"></div>
+        </div>
+
+        <fieldset class="form-group">
+            <legend>Extra:</legend>
+            <div class="checkbox-group">
+                <input type="checkbox" id="extraSugar" th:field="*{extraSugar}" />
+                <label for="extraSugar">Sugar</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="extraChocolate" th:field="*{extraChocolate}" />
+                <label for="extraChocolate">Chocolate (+<span th:text="${T(com.lusilab.L.AromaCoffeeShop.cart.CartItem).PRICE_EXTRA_CHOCOLATE}">50</span> ALL)</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="extraCinnamon" th:field="*{extraCinnamon}" />
+                <label for="extraCinnamon">Cinnamon (+<span th:text="${T(com.lusilab.L.AromaCoffeeShop.cart.CartItem).PRICE_EXTRA_CINNAMON}">20</span> ALL)</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="extraMilk" th:field="*{extraMilk}" />
+                <label for="extraMilk">Milk (+<span th:text="${T(com.lusilab.L.AromaCoffeeShop.cart.CartItem).PRICE_EXTRA_MILK}">30</span> ALL)</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="extraCookies" th:field="*{extraCookies}" />
+                <label for="extraCookies">Cookies (+<span th:text="${T(com.lusilab.L.AromaCoffeeShop.cart.CartItem).PRICE_EXTRA_COOKIES}">70</span> ALL)</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="extraCaramel" th:field="*{extraCaramel}" />
+                <label for="extraCaramel">Caramel (+<span th:text="${T(com.lusilab.L.AromaCoffeeShop.cart.CartItem).PRICE_EXTRA_CARAMEL}">40</span> ALL)</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="extraVanillie" th:field="*{extraVanillie}" />
+                <label for="extraVanillie">Vanillie (+<span th:text="${T(com.lusilab.L.AromaCoffeeShop.cart.CartItem).PRICE_EXTRA_VANILLIE}">30</span> ALL)</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="extraCacao" th:field="*{extraCacao}" />
+                <label for="extraCacao">Cacao (+<span th:text="${T(com.lusilab.L.AromaCoffeeShop.cart.CartItem).PRICE_EXTRA_CACAO}">30</span> ALL)</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="extraWhippedCream" th:field="*{extraWhippedCream}" />
+                <label for="extraWhippedCream">Whipped Cream (+<span th:text="${T(com.lusilab.L.AromaCoffeeShop.cart.CartItem).PRICE_EXTRA_WHIPPED_CREAM}">60</span> ALL)</label>
+            </div>
+        </fieldset>
+        <br/>
+        <button type="submit" class="btn-submit">Add to Cart</button>
+    </form>
+    <a th:href="@{/coffees}" class="link-cancel">Cancel and go to the Main Page</a>
+</div>
+</body>
+</html>

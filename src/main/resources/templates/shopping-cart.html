@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="sq" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Cart- L'Aroma</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 25px;
+            background-color: #fff5e1; /* Ngjyrë e ëmbël kajsi e lehtë / krem */
+            color: #5D4037; /* Ngjyrë teksti bazë kafe e ngrohtë */
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+            color: #795548; /* Kafe e ngrohtë */
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate; /* Lejon border-radius dhe border-spacing */
+            border-spacing: 0;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08); /* Hije më e butë */
+            border-radius: 12px; /* Kënde të rrumbullakosura për tabelën */
+            overflow: hidden; /* E nevojshme për border-radius në Safari/Chrome */
+            background-color: #ffffff; /* Sfondi i bardhë për tabelën */
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            vertical-align: middle; /* Rreshtim më i mirë vertikal */
+            border-bottom: 1px solid #f0e6d8; /* Ndarës i butë ngjyrë kafe e lehtë */
+        }
+        tbody tr:last-child td {
+            border-bottom: none; /* Heq kufirin e poshtëm për rreshtin e fundit */
+        }
+
+        thead tr {
+            background-color: #8d6e63; /* Kafe e mesme për kokën e tabelës */
+            color: white;
+        }
+        thead th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+            border-bottom: none; /* Koka ka sfondin e vet */
+        }
+        /* Rreshtimi i kolonave specifike */
+        thead th:nth-child(1), thead th:nth-child(3) { text-align: left; } /* Kafeja, Shtesat */
+        thead th:nth-child(2), thead th:nth-child(4), thead th:nth-child(7) { text-align: center; } /* Madhësia, Sasia, Veprime */
+        thead th:nth-child(5), thead th:nth-child(6) { text-align: right; } /* Çmimi/Njësi, Nëntotali */
+
+        tbody td:nth-child(1), tbody td:nth-child(3) { text-align: left; }
+        tbody td:nth-child(2), tbody td:nth-child(4), tbody td:nth-child(7) { text-align: center; }
+        tbody td:nth-child(5), tbody td:nth-child(6) { text-align: right; }
+
+        /* Rreshtimi i shtesave brenda qelizës së tyre */
+        td:nth-child(3) ul.extras-list, td:nth-child(3) span {
+            text-align: left;
+            display: inline-block; /* Për të lejuar text-align left brenda qelizës së qendërzuar */
+        }
+
+
+        tbody tr {
+            background-color: #ffffff; /* Rreshtat e bardhë */
+            transition: background-color 0.2s ease;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #fff9f2; /* Krem shumë i lehtë për rreshtat çift */
+        }
+        tbody tr:hover {
+            background-color: #f5efdc; /* Krem pak më i errët në hover */
+        }
+
+        .extras-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+            font-size: 0.88em;
+            color: #795548; /* Kafe e çelët */
+        }
+        .extras-list li {
+            margin-bottom: 3px;
+        }
+
+        .quantity-form input[type="number"] {
+            width: 60px;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #d1bfa7; /* Kufi kafe e lehtë */
+            border-radius: 6px;
+            font-size: 0.95em;
+            background-color: #fdfdfd;
+            color: #5D4037;
+            box-sizing: border-box;
+            margin: 0 auto; /* Për qendërzim brenda qelizës së qendërzuar */
+        }
+        .quantity-form input[type="number"]:focus {
+            outline: none;
+            border-color: #ff8a65;
+            box-shadow: 0 0 0 2px rgba(255, 138, 101, 0.2);
+        }
+
+        .remove-link {
+            color: #e57373; /* E kuqe e ëmbël */
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 8px;
+            border-radius: 15px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .remove-link:hover {
+            background-color: #ffebee; /* Rozë e lehtë në hover */
+            color: #c62828; /* E kuqe më e errët në hover */
+            text-decoration: none;
+        }
+
+        .total-summary {
+            text-align: right;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 2px solid #e0cdaf; /* Ndarës i butë */
+        }
+        .total-summary strong {
+            font-size: 1.35em;
+            color: #ff7043; /* Ngjyrë korali e theksuar për totalin */
+        }
+        .total-summary strong span {
+            margin-left: 10px;
+        }
+
+        .cart-actions {
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px; /* Padding i mirë */
+            text-decoration: none;
+            border-radius: 25px; /* Formë pilule */
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-continue {
+            background-color: #a1887f; /* Kafe e lehtë/gri e ngrohtë */
+            color: white;
+            margin-right: 12px;
+        }
+        .btn-continue:hover {
+            background-color: #8d6e63; /* Pak më e errët */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-checkout {
+            background-color: #ff8a65; /* Ngjyrë korali e ëmbël */
+            color: white;
+        }
+        .btn-checkout:hover {
+            background-color: #ff7043; /* Korali më i errët */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #fff9f2; /* Krem shumë i lehtë */
+            border: 1px dashed #e0cdaf; /* Kufi i ndërprerë ngjyrë kafe e lehtë */
+            color: #795548; /* Tekst kafe e ngrohtë */
+            border-radius: 10px;
+            margin: 30px auto;
+            max-width: 600px;
+        }
+        .empty-cart p {
+            margin-bottom: 15px;
+            font-size: 1.15em;
+        }
+        .empty-cart a {
+            color: #ff7043; /* Ngjyrë korali */
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: rgba(255, 138, 101, 0.1); /* Sfond i lehtë korali */
+            transition: background-color 0.3s ease;
+        }
+        .empty-cart a:hover {
+            text-decoration: none;
+            background-color: rgba(255, 112, 67, 0.2);
+        }
+
+    </style>
+</head>
+<body>
+<h1>Your Cart</h1>
+
+<div th:if="${#lists.isEmpty(shoppingCart.items)}" class="empty-cart">
+    <p>Your Cart is Empty. <a th:href="@{/coffees}">Start Buying!</a></p>
+</div>
+
+<div th:unless="${#lists.isEmpty(shoppingCart.items)}">
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Extra</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${shoppingCart.items}">
+            <td th:text="${item.coffeeName}">Name</td>
+            <td th:text="${item.coffeeSize != null ? item.coffeeSize.toString() : 'N/A'}">Size</td>
+            <td>
+                <ul class="extras-list" th:if="${item.extraSugar or item.extraChocolate or item.extraCinnamon or item.extraMilk or item.extraCookies or item.extraCaramel or item.extraVanillie or item.extraCacao or item.extraWhippedCream}">
+                    <li th:if="${item.extraSugar}">Sugar</li>
+                    <li th:if="${item.extraChocolate}">Chocolate</li>
+                    <li th:if="${item.extraCinnamon}">Cinnamon</li>
+                    <li th:if="${item.extraMilk}">Milk</li>
+                    <li th:if="${item.extraCookies}">Cookies</li>
+                    <li th:if="${item.extraCaramel}">Caramel</li>
+                    <li th:if="${item.extraVanillie}">Vanillie</li>
+                    <li th:if="${item.extraCacao}">Cacao</li>
+                    <li th:if="${item.extraWhippedCream}">Whipped Cream</li>
+                </ul>
+                <span th:unless="${item.extraSugar or item.extraChocolate or item.extraCinnamon or item.extraMilk or item.extraCookies or item.extraCaramel or item.extraVanillie or item.extraCacao or item.extraWhippedCream}">None</span>
+            </td>
+            <td>
+                <form th:action="@{/cart/update}" method="post" class="quantity-form">
+                    <input type="hidden" name="cartItemId" th:value="${item.cartItemId}" />
+                    <input type="number" name="quantity" th:value="${item.quantity}" min="1" max="10" onchange="this.form.submit()" title="Ndrysho sasinë dhe shtyp Enter ose kliko jashtë"/>
+                </form>
+            </td>
+            <td th:text="${#numbers.formatDecimal(item.priceAtPurchase + (item.getSubtotal()/item.quantity - item.priceAtPurchase), 1, 2)} + ' ALL'">Price</td>
+            <td th:text="${#numbers.formatDecimal(item.subtotal, 1, 2)} + ' ALL'">Subtotal</td>
+            <td>
+                <a th:href="@{/cart/remove/{cartItemId}(cartItemId=${item.cartItemId})}"
+                   onclick="return confirm('Are you sure you want to remove this item from the cart?');" class="remove-link">Remove</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="total-summary">
+        <strong>Totali i Përgjithshëm: <span th:text="${#numbers.formatDecimal(shoppingCart.totalAmount, 1, 2)} + ' ALL'"></span></strong>
+    </div>
+    <div class="cart-actions">
+        <a th:href="@{/coffees}" class="btn btn-continue">Vazhdo Blerjet</a>
+        <a th:href="@{/checkout/form}" class="btn btn-checkout">Vazhdo te Pagesa</a>
+    </div>
+</div>
+</body>
+</html>

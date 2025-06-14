@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="sq" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle != null ? pageTitle : (coffee.id == null ? 'Shto Kafe' : 'Modifiko Kafe')}"></title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; /* Heqim margin default */
+            padding: 20px; /* Shtojmë pak padding rreth e rrotull */
+            background-color: #fff5e1; /* Ngjyrë e ëmbël kajsi e lehtë / krem */
+            color: #333;
+            line-height: 1.6;
+            display: flex; /* Përdorim flexbox për qendërzim */
+            align-items: center; /* Qendërzim vertikal */
+            justify-content: center; /* Qendërzim horizontal */
+            min-height: 100vh; /* Siguron që body të mbushë të gjithë lartësinë e ekranit */
+            box-sizing: border-box;
+        }
+
+        .form-container {
+            max-width: 600px;
+            width: 100%; /* Merr gjerësinë maksimale të lejuar, respekton padding e body */
+            background-color: #ffffff;
+            padding: 30px 40px; /* Më shumë hapësirë e brendshme */
+            border-radius: 12px; /* Kënde më të rrumbullakosura */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1); /* Hije më e butë dhe moderne */
+        }
+
+        .form-container h1 {
+            text-align: center;
+            color: #795548; /* Kafe e ngrohtë, si në admin dashboard */
+            margin-bottom: 30px; /* Më shumë hapësirë poshtë titullit */
+            font-size: 2em; /* Madhësi më e madhe për titullin */
+            font-weight: 600;
+        }
+
+        /* Qendërzon butonat submit/cancel brenda formës */
+        form {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px; /* Më shumë hapësirë ndërmjet grupeve të formës */
+            text-align: left; /* Siguron që label dhe input të jenë të rreshtuara majtas */
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px; /* Pak më shumë hapësirë poshtë label */
+            font-weight: 600; /* Tekst më i trashë për label */
+            color: #5D4037; /* Ngjyrë kafe e errët për label */
+            font-size: 0.95em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: 100%; /* Input merr të gjithë gjerësinë e .form-group */
+            padding: 12px 15px; /* Padding më i mirë brenda inputeve */
+            border: 1px solid #d1bfa7; /* Kufi më i butë, ngjyrë kafe e lehtë */
+            border-radius: 8px; /* Kënde të rrumbullakosura për input */
+            box-sizing: border-box; /* Siguron që padding dhe border të jenë pjesë e width/height */
+            font-size: 1em;
+            background-color: #fdfdfd; /* Sfond shumë i lehtë për inputet */
+            color: #333;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none; /* Heqim outline default */
+            border-color: #ff8a65; /* Ngjyrë korali në fokus */
+            box-shadow: 0 0 0 3px rgba(255, 138, 101, 0.2); /* Hije e lehtë rrethuese në fokus */
+        }
+
+        .form-group textarea {
+            min-height: 100px; /* Lartësi minimale më e madhe për textarea */
+            resize: vertical; /* Lejon ndryshimin e madhësisë vetëm vertikalisht */
+        }
+
+        .btn-submit {
+            background-color: #ff8a65; /* Ngjyrë korali e ëmbël */
+            color: white;
+            padding: 12px 30px; /* Padding i përshtatshëm */
+            border: none;
+            border-radius: 25px; /* Formë pilule */
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-right: 10px; /* Hapësirë nëse butonat janë në një rresht */
+        }
+
+        .btn-submit:hover {
+            background-color: #ff7043; /* Ngjyrë korali më e errët në hover */
+            transform: translateY(-2px); /* Efekt i lehtë ngritjeje */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-cancel {
+            display: inline-block;
+            padding: 10px 25px; /* Padding pak më i vogël se butoni kryesor */
+            color: #795548; /* Ngjyrë kafe për tekstin */
+            text-decoration: none;
+            border: 1px solid #d1bfa7; /* Kufi i lehtë ngjyrë kafe */
+            border-radius: 25px; /* Formë pilule, konsistencë */
+            font-weight: 500;
+            font-size: 1em;
+            background-color: #ffffff; /* Sfond i bardhë */
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-cancel:hover {
+            background-color: #f5f0e8; /* Sfond shumë i lehtë bezhë/kafe në hover */
+            color: #5D4037; /* Tekst më i errët në hover */
+            border-color: #bcaaa4; /* Kufi pak më i errët në hover */
+            transform: translateY(-1px); /* Efekt i lehtë ngritjeje */
+        }
+    </style>
+
+</head>
+<body>
+<div class="form-container">
+    <h1 th:text="${pageTitle != null ? pageTitle : (coffee.id == null ? 'Add new Coffee' : 'Edit')}"></h1>
+
+    <form th:action="@{/admins/coffees/save}" th:object="${coffee}" method="post">
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" th:field="*{name}" required />
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" th:field="*{description}" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="price">Price (ALL):</label>
+            <input type="number" id="price" th:field="*{price}" step="0.01" min="0" required />
+
+        </div>
+        <div class="form-group">
+            <label for="origin">Origin:</label>
+            <input type="text" id="origin" th:field="*{origin}" />
+        </div>
+        <div class="form-group">
+            <label for="intensityOfCoffee">Intensity</label>
+            <input type="text" id="intensityOfCoffee" th:field="*{intensityOfCoffee}" />
+        </div>
+        <div class="form-group">
+            <label for="imageUrl">Image (URL):</label>
+            <input type="text" id="imageUrl" th:field="*{imageUrl}" />
+
+        </div>
+        <button type="submit" class="btn-submit" th:text="${coffee.id == null ? 'Save' : 'Edit'}"></button>
+        <a th:href="@{/admins/coffees/list}" class="btn-cancel">Cancle</a>
+    </form>
+</div>
+</body>
+</html>
