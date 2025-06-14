@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="sq" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - L'Aroma Coffee Shop</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #FDFAF6; /* Ngjyrë e lehtë kremi/kafeje */
+            color: #4A3B31; /* Ngjyrë kafe për tekstin kryesor */
+            text-align: center;
+        }
+        .container {
+            background-color: #FFFFFF;
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            width: auto;
+            max-width: 500px;
+        }
+        h1 {
+            font-size: 2.8em;
+            color: #6F4E37; /* Ngjyrë më e errët kafeje për titullin */
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        p.subtitle {
+            font-size: 1.2em;
+            color: #5A4A40; /* Ngjyrë pak më e çelët kafeje për paragrafin */
+            margin-bottom: 35px;
+        }
+        .options .option-button {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            margin: 18px 0;
+            padding: 16px 22px;
+            text-decoration: none;
+            color: white;
+            border-radius: 8px;
+            font-size: 1.25em;
+            font-weight: 500; /* Medium weight */
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .options .option-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .admin-login-btn {
+            background-color: #8B4513; /* SaddleBrown */
+        }
+        .admin-login-btn:hover {
+            background-color: #7A3D10;
+        }
+        .admin-signup-btn {
+            background-color: #A0522D; /* Sienna */
+        }
+        .admin-signup-btn:hover {
+            background-color: #8C4827;
+        }
+        .user-btn {
+            background-color: #5CB85C; /* Green */
+        }
+        .user-btn:hover {
+            background-color: #4CAE4C;
+        }
+        .logo { /* Opsionale, nëse ke një logo */
+            max-width: 150px;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+<!-- <img th:src="@{/images/logo.png}" alt="L'Aroma Logo" class="logo" /> --> <!-- Shembull logoje -->
+<div class="container">
+    <h1>Welcome to <br/>L'Aroma Coffee Shop!</h1>
+    <p class="subtitle">Choose your option:</p>
+    <div class="options">
+        <a th:href="@{/admins/login}" class="option-button admin-login-btn">Log in as an Admin</a>
+        <a th:href="@{/admins/signup}" class="option-button admin-signup-btn">Sign up as an Admin</a>
+        <a th:href="@{/coffees}" class="option-button user-btn">Continue as an user</a>
+    </div>
+</div>
+</body>
+</html>

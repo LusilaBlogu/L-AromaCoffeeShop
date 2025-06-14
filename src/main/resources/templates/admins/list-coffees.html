@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="sq" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Coffee's List - Admin</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px 30px; /* Më shumë padding anësor */
+            background-color: #fff5e1; /* Ngjyrë e ëmbël kajsi e lehtë / krem */
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+            color: #795548; /* Kafe e ngrohtë */
+            margin-bottom: 10px; /* Reduktuar pak margin-bottom për t'iu afruar linkut poshtë */
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+
+        /* Stili për linkun "Kthehu te Dashboard" dhe "Shto Kafe të Re" */
+        .page-actions {
+            text-align: center; /* Qendron butonat */
+            margin-bottom: 25px;
+        }
+
+        .page-actions a, .btn-add-standalone { /* .btn-add-standalone per butonin "Shto Kafe" */
+            display: inline-block;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 25px; /* Formë pilule */
+            font-weight: 600;
+            margin: 5px; /* Hapësirë rreth butonave */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Stili specifik për "Kthehu te Dashboard" */
+        .page-actions a[th\:href*="dashboard"] {
+            background-color: #a1887f; /* Kafe e lehtë */
+            color: white;
+        }
+        .page-actions a[th\:href*="dashboard"]:hover {
+            background-color: #8d6e63; /* Kafe pak më e errët */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Stili për "Shto Kafe të Re" (btn-add) kur përdoret në .page-actions */
+        .btn-add { /* Ky class përdoret edhe brenda tabelës */
+            background-color: #ff8a65; /* Ngjyrë korali e ëmbël */
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn-add:hover {
+            background-color: #ff7043; /* Korali më i errët */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+
+        .message {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            border-left-width: 6px;
+            border-left-style: solid;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: center; /* Qendron tekstin e mesazhit */
+        }
+
+        .success-message {
+            background-color: #e6ffed;
+            border-left-color: #66bb6a; /* Jeshile e ëmbël */
+            color: #388e3c;
+        }
+
+        .error-message {
+            background-color: #ffebee;
+            border-left-color: #ef5350; /* E kuqe e ëmbël */
+            color: #c62828;
+        }
+
+        /* Stili për mesazhin "Nuk ka kafe të regjistruara." */
+        div[th\:if*="isEmpty(coffees)"] p {
+            text-align: center;
+            font-size: 1.1em;
+            color: #795548; /* Ngjyrë kafe e ngrohtë */
+            padding: 30px;
+            background-color: #fff9f2; /* Krem shumë i lehtë */
+            border: 1px dashed #e0cdaf; /* Kufi i ndërprerë me ngjyrë kafe të lehtë */
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate; /* Lejon border-radius për tabelën */
+            border-spacing: 0;
+            margin-top: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.07); /* Hije më e butë */
+            border-radius: 12px; /* Kënde të rrumbullakosura për tabelën */
+            overflow: hidden; /* E nevojshme për border-radius në Safari/Chrome */
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            vertical-align: middle; /* Rreshton imazhin dhe tekstin vertikalisht */
+            border-bottom: 1px solid #e0cdaf; /* Kufi i poshtëm ngjyrë kafe e lehtë */
+        }
+        tbody tr:last-child td {
+            border-bottom: none; /* Heq kufirin e poshtëm për rreshtin e fundit */
+        }
+
+        thead tr {
+            background-color: #8d6e63; /* Kafe e mesme për kokën e tabelës */
+            color: white;
+        }
+        thead th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+            border-bottom: none; /* Heqim border-bottom pasi thead ka sfond të vetin */
+        }
+
+        /* Qendërzimi i kolonave specifike */
+        thead th:first-child, /* ID Header */
+        thead th:nth-child(2), /* Imazh Header */
+        thead th:nth-child(5), /* Çmimi Header */
+        thead th:last-child {  /* Veprime Header */
+            text-align: center;
+        }
+
+        td:first-child, /* ID Data */
+        td:nth-child(2), /* Imazh Data */
+        td:nth-child(5) {  /* Çmimi Data */
+            text-align: center;
+        }
+
+        tbody tr {
+            background-color: #fffbf2; /* Krem shumë i lehtë për rreshtat */
+            transition: background-color 0.25s ease;
+        }
+        tbody tr:hover {
+            background-color: #f5efdc; /* Krem pak më i errët në hover */
+        }
+
+        .actions {
+            text-align: center; /* Qendron butonat e veprimeve */
+        }
+        .actions a {
+            margin: 0 4px; /* Hapësirë e vogël ndërmjet butonave */
+            text-decoration: none;
+            padding: 7px 12px; /* Madhësi e përshtatshme */
+            border-radius: 20px; /* Formë pilule */
+            font-weight: 500;
+            font-size: 0.9em;
+            color: white;
+            display: inline-block; /* Për padding dhe margin korrekt */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-edit {
+            background-color: #64b5f6; /* Blu e ëmbël */
+        }
+        .btn-edit:hover {
+            background-color: #42a5f5; /* Blu më e errët */
+            transform: translateY(-1px);
+        }
+
+        .btn-delete {
+            background-color: #ef5350; /* E kuqe e ëmbël */
+        }
+        .btn-delete:hover {
+            background-color: #e53935; /* E kuqe më e errët */
+            transform: translateY(-1px);
+        }
+
+        img.coffee-thumb {
+            max-width: 60px;  /* Madhësi pak më e vogël */
+            max-height: 60px;
+            object-fit: cover;
+            border-radius: 8px; /* Kënde të rrumbullakosura */
+            border: 1px solid #e0cdaf; /* Kufi i lehtë ngjyrë kafe */
+            display: block; /* Për të lejuar margin auto */
+            margin: 0 auto; /* Qendron imazhin brenda qelizës */
+        }
+        td span[th\:unless*="imageUrl"] { /* Stili për "Pa Imazh" */
+            font-style: italic;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+    </style>
+</head>
+<body>
+<h1>Manage Coffees</h1>
+<a th:href="@{/admins/dashboard}"
+   style="background-color: #FCE4EC; /* Ngjyra e sfondit rozë e lehtë */
+          color: #AD1457;             /* Ngjyra e tekstit (një rozë më e errët për kontrast) ose #333 për gri */
+          padding: 10px 15px;        /* Hapësira e brendshme për ta bërë të duket si buton */
+          text-decoration: none;     /* Heq nënvizimin e lidhjes */
+          border-radius: 10px;        /* Kënde të rrumbullakosura */
+          border: 1px solid #F8BBD0; /* Një kornizë e lehtë rozë (opsionale, mund ta heqësh 'border' fare) */
+          margin-bottom: 15px;       /* Margjina e poshtme ekzistuese */
+          display: inline-block;     /* Shfaqja ekzistuese */
+          font-weight: 500;          /* E bën tekstin pak më të trashë (opsionale) */
+          text-align: center;
+          cursor: pointer;">
+    Return to Dashboard
+</a> <br/>
+<a th:href="@{/admins/coffees/form}"
+   class="btn-add"
+style="background-color: #4CAF50; /* Ngjyra e sfondit jeshile */
+color: white;                 /* Ngjyra e tekstit e bardhë */
+padding: 10px 15px;        /* Hapësira e brendshme për ta bërë të duket si buton */
+text-decoration: none;     /* Heq nënvizimin e lidhjes */
+border-radius: 10px;        /* Kënde të rrumbullakosura */
+border: none;                /* Pa kornizë, ose mund të shtoni një (p.sh., border: 1px solid #388E3C;) */
+display: inline-block;     /* E nevojshme që padding dhe margin të funksionojnë si duhet */
+text-align: center;        /* Për të qendërzuar tekstin brenda butonit */
+font-weight: 500;          /* E bën tekstin pak më të trashë (opsionale) */
+cursor: pointer;">
+Add new Coffee
+</a>
+
+<div th:if="${success_message}" class="message success-message" th:text="${success_message}"></div>
+<div th:if="${error_message}" class="message error-message" th:text="${error_message}"></div>
+
+<div th:if="${#lists.isEmpty(coffees)}">
+    <p>There are no registered coffees.</p>
+</div>
+<table th:unless="${#lists.isEmpty(coffees)}">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price (ALL)</th>
+        <th>Origin</th>
+        <th>Intensity</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="coffee : ${coffees}">
+        <td th:text="${coffee.id}"></td>
+        <td><img th:if="${coffee.imageUrl}" th:src="${coffee.imageUrl}" th:alt="${coffee.name}" class="coffee-thumb"/>
+            <span th:unless="${coffee.imageUrl}">No Image</span>
+        </td>
+        <td th:text="${coffee.name}"></td>
+        <td th:text="${coffee.description}"></td>
+        <td th:text="${#numbers.formatDecimal(coffee.price, 1, 2)}"></td>
+        <td th:text="${coffee.origin}"></td>
+        <td th:text="${coffee.intensityOfCoffee}"></td>
+        <td class="actions">
+            <a th:href="@{/admins/coffees/edit/{id}(id=${coffee.id})}" class="btn-edit">Edit</a>
+            <a th:href="@{/admins/coffees/delete/{id}(id=${coffee.id})}" class="btn-delete"
+               onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
